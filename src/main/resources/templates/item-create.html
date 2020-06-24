@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <script defer th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script defer th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+    <script defer th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/static/css/style.css}">
+
+    <meta charset="UTF-8">
+    <title>Create Todo</title>
+</head>
+<body>
+<header>
+    <div class="container">
+        <div sec:authorize="isAuthenticated()">
+            <div sec:authorize="hasAuthority('ADMIN')">
+                <h2>Hello <span th:text="${#authentication.name}"></span></h2>
+            </div>
+            <div sec:authorize="!hasAuthority('ADMIN')">
+                <p>Hello <span th:text="${#authentication.name}"></span></p>
+            </div>
+        </div>
+
+        <div sec:authorize="hasAuthority('ADMIN')">
+            <a class="btn btn-outline-primary" th:href="@{/admin}">Admin page</a>
+        </div>
+    </div>
+</header>
+<nav class="navbar navbar-dark bg-dark">
+
+    <ul class="nav">
+        <li class="nav-item">
+            <a class="nav-link text-info" th:href="@{/index}">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-info" th:href="@{/frequently-asked-questions}" href="#">FAQ</a>
+        </li>
+        <li sec:authorize="isAnonymous() || hasAuthority('ADMIN')" class="nav-item">
+            <a class="nav-link text-info" th:href="@{/register}" href="#">Register</a>
+        </li>
+        <li sec:authorize="hasAuthority('ADMIN')" class="nav-item">
+            <a class="nav-link text-info" th:href="@{/items}" href="#">Your ToDo:s</a>
+        </li>
+        <li sec:authorize="hasAuthority('ADMIN')" class="nav-item">
+            <a class="nav-link text-info" th:href="@{/users}" href="#">AppUsers Admin</a>
+        </li>
+        <li sec:authorize="hasAuthority('ADMIN')" class="nav-item">
+            <a class="nav-link text-info" th:href="@{/create-todo}" href="#">ToDo Admin</a>
+        </li>
+        <li sec:authorize="hasAuthority('USER')" class="nav-item">
+            <a class="nav-link text-info" th:href="@{/create-todo}" href="#">Your ToDo:s</a>
+        </li>
+    </ul>
+
+    <form th:action="@{/logout}" class="form-inline" method="post">
+        <div sec:authorize="isAuthenticated()">
+            <button class="btn btn-outline-info" type="submit" value="Logout">Logout</button>
+        </div>
+        <div sec:authorize="isAnonymous()">
+            <a class="btn btn-outline-info" th:href="@{/login}" value="Login">Login</a>
+        </div>
+    </form>
+</nav>
+
+<main>
+    <div class="container">
+        <div class="row">
+            <form th:action="@{/users/items/create}" th:object="${item}" method="post">
+                <h2>Create a new todo</h2>
+                <div class="input-group mb-2">
+                    <span class="input-group-text">Todo title:</span>
+                </div>
+                <input class="form-control" type="text" id="title"  th:field="*{itemTitle}" placeholder="Enter title"/>
+                <br>
+                <div class="input-group mb-2">
+                    <span class="input-group-text">Description:</span>
+                </div>
+                <input class="form-control" type="text" id="description" th:field="*{itemDescription}"  placeholder="Enter description"/>
+                <br>
+                <div class="input-group mb-2">
+                    <span class="input-group-text">Deadline:</span>
+                </div>
+                <input class="form-control" type="date" id="deadLine" th:field="*{deadline}"  placeholder="Enter deadline"/>
+                <br>
+                <div class="input-group mb-2">
+                    <span class="input-group-text">Status:</span>
+                </div>
+                <input class="form-control" type="checkbox" id="status" th:field="*{deadline}" placeholder="Enter todo status"/>
+                <br>
+                <div class="input-group mb-2">
+                    <span class="input-group-text">Reward:</span>
+                </div>
+                <input class="form-control" type="number" id="reward" th:field="*{reward}" placeholder="Enter reward"/>
+                <br>
+                <button type="submit" class="btn btn-secondary">Create</button>
+            </form>
+
+        </div>
+    </div>
+</main>
+<footer>
+</footer>
+</body>
+</html>

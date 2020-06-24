@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <script defer th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script defer th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+    <script defer th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/static/css/style.css}">
+
+    <meta charset="UTF-8">
+    <title>Access denied</title>
+</head>
+<body>
+<header>
+    <div class="container">
+        <div sec:authorize="isAuthenticated()">
+            <div sec:authorize="hasAuthority('ADMIN')">
+                <h2>Hello <span th:text="${#authentication.name}"></span></h2>
+            </div>
+            <div sec:authorize="!hasAuthority('ADMIN')">
+                <p>Hello <span th:text="${#authentication.name}"></span></p>
+            </div>
+        </div>
+
+        <div sec:authorize="hasAuthority('ADMIN')">
+            <a class="btn btn-outline-primary" th:href="@{/admin}">Admin page</a>
+        </div>
+    </div>
+</header>
+<nav class="navbar navbar-dark bg-dark">
+    <ul class="nav">
+        <li class="nav-item">
+            <a class="nav-link text-info" th:href="@{/index}">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-info" th:href="@{/frequently-asked-questions}" href="#">FAQ</a>
+        </li>
+        <li sec:authorize="isAnonymous() || hasAuthority('ADMIN')" class="nav-item">
+            <a class="nav-link text-info" th:href="@{/register}" href="#">Register</a>
+        </li>
+        <li sec:authorize="hasAuthority('USER')" class="nav-item">
+            <a class="nav-link text-info" th:href="@{/items}" href="#">Your ToDo:s</a>
+        </li>
+        <li sec:authorize="hasAuthority('ADMIN')" class="nav-item">
+            <a class="nav-link text-info" th:href="@{/item-create}" href="#">Create ToDo</a>
+        </li>
+        <li sec:authorize="hasAuthority('ADMIN')" class="nav-item">
+            <a class="nav-link text-info" th:href="@{/items}" href="#">ToDo:s Admin</a>
+        </li>
+        <li sec:authorize="hasAuthority('ADMIN')" class="nav-item">
+            <a class="nav-link text-info" th:href="@{/users}" href="#">AppUsers Admin</a>
+        </li>
+    </ul>
+    <form th:action="@{/logout}" class="form-inline" method="post">
+        <div sec:authorize="isAuthenticated()">
+            <button class="btn btn-outline-info" type="submit" value="Logout">Logout</button>
+        </div>
+        <div sec:authorize="isAnonymous()">
+            <a class="btn btn-outline-info" th:href="@{/login}" value="Login">Login</a>
+        </div>
+    </form>
+</nav>
+<main>
+    <div class="container">
+        <div class="card mt-4 mb-3 border-danger">
+            <h4 class="bg-dark text-danger card-header font-weight-light">Access Denied</h4>
+            <div class="card-body">
+                <h5>You are not authorized to access requested page</h5>
+            </div>
+        </div>
+    </div>
+</main>
+<footer>
+</footer>
+</body>
+</html>
